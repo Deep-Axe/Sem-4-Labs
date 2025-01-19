@@ -1,9 +1,0 @@
-d:\230953160\Lab1_Calc\Lab1_Calc\bin\Debug\Lab1_Calc.exe.config
-D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\bin\Debug\Lab1_Calc.exe.config
-D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\bin\Debug\Lab1_Calc.exe
-D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\bin\Debug\Lab1_Calc.pdb
-D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.Form1.resources
-D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.Properties.Resources.resources
-D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.csproj.GenerateResource.Cache
-D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.exe
-D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.pdb
