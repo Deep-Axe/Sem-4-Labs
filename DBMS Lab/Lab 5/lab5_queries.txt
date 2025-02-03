@@ -1,0 +1,155 @@
+CREATE TABLE Student(regno VARCHAR(20) PRIMARY KEY, name VARCHAR(50) NOT NULL, major VARCHAR(20) NOT NULL, bdate DATE);
+
+CREATE TABLE COURSE(course_id INT PRIMARY KEY, cname VARCHAR(30) NOT NULL, dept VARCHAR(30));
+
+CREATE TABLE ENROLL(regno VARCHAR(20), course_id INT, sem INT, book_isbn INT, PRIMARY KEY(regno, course_id, sem), FOREIGN KEY(regno) references Student (regno), FOREIGN KEY(course_id) references COURSE(course_id), FOREIGN KEY(book_isbn) references TEXT(book_isbn));
+
+CREATE TABLE BOOK_ADOPTION(course_id INT, sem INT, book_isbn INT, PRIMARY KEY(course_id, book_isbn), FOREIGN KEY(book_isbn) references TEXT(book_isbn), FOREIGN KEY(course_id) references COURSE(course_id) );
+
+CREATE TABLE TEXT(book_isbn INT PRIMARY KEY, booktitle VARCHAR(50), publisher VARCHAR(50), author VARCHAR(50));
+
+
+
+INSERT INTO Student (regno, name, major, bdate) 
+VALUES ('S001', 'Alice Smith', 'Computer Science', TO_DATE('04-NOV-2000', 'DD-MON-YYYY')),
+('S002', 'Bob Johnson', 'Electrical', TO_DATE('22-NOV-2000', 'DD-MON-YYYY')),
+('S003', 'Charlie Brown', 'Mechanical', TO_DATE('10-AUG-1998', 'DD-MON-YYYY')),
+('S004', 'Diana White', 'Mathematics', TO_DATE('30-MAR-2001', 'DD-MON-YYYY')),
+('S005', 'Eva Green', 'Physics', TO_DATE('18-JAN-2002', 'DD-MON-YYYY')),
+('S006', 'Ada Holmes', 'Computer Science', TO_DATE('8-JUN-2002', 'DD-MON-YYYY'));
+
+INSERT INTO Student (regno, name, major, bdate) 
+VALUES
+('S006', 'Ada Holmes', 'Computer Science', TO_DATE('8-JUN-2002', 'DD-MON-YYYY'));
+
+INSERT INTO COURSE (course_id, cname, dept) VALUES
+(101, 'Data Structures', 'Computer Science'),
+(102, 'Circuits and Signals', 'Electrical'),
+(103, 'Fluid Mechanics', 'Mechanical'),
+(104, 'Linear Algebra', 'Mathematics'),
+(105, 'Quantum Mechanics', 'Physics'),
+(106, 'Electromagnetic Fields', 'Physics');
+
+
+INSERT INTO TEXT (book_isbn, booktitle, publisher, author) VALUES
+(1001, 'Introduction to Algorithms', 'MIT Press', 'Thomas H. Cormen'),
+(1002, 'The Art of Electronics', 'Cambridge University Press', 'Paul Horowitz'),
+(1003, 'Mechanics of Materials', 'McGraw-Hill', 'R. C. Hibbeler'),
+(1004, 'Linear Algebra Done Right', 'Springer', 'Sheldon Axler'),
+(1005, 'Introduction to Quantum Mechanics', 'Pearson', 'David J. Griffiths'),
+(1006, 'Electronic Devices and Circuits', 'McGraw-Hill', 'Millman & Halkias'),
+(1007, 'Quantum Physics: A Fundamental Approach', 'Springer', 'Arnold Neumaier'),
+(1008, 'Electromagnetic Fields and Waves', 'McGraw-Hill', 'William H. Hayt'),
+(1009, 'Engineering Electromagnetics', 'McGraw-Hill', 'William Hayt');
+
+INSERT INTO BOOK_ADOPTION (course_id, sem, book_isbn) VALUES
+(101, 1, 1001),
+(102, 1, 1002), 
+(103, 2, 1003),
+(101, 2, 1004),
+(102, 2, 1006), 
+(105, 1, 1005), 
+(105, 2, 1007), 
+(106, 1, 1008), 
+(106, 2, 1009);
+INSERT INTO ENROLL (regno, course_id, sem, book_isbn) VALUES
+('S001', 101, 1, 1001),
+('S001', 105, 1, 1005),
+('S002', 102, 1, 1002),
+('S003', 103, 2, 1003),
+('S003', 105, 2, 1007),
+('S004', 104, 2, 1004),
+('S001', 104, 2, 1004),
+('S005', 106, 1, 1008),
+('S005', 106, 2, 1009),
+('S001', 101, 1, 1001), 
+('S001', 101, 2, 1004); 
+('S003', 105, 1, 1005),
+('S003', 105, 2, 1007); 
+
+
+iii) a. SELECT course_id, cname from COURSE where course_id IN (SELECT course_id FROM Book_adoption group by course_id having count(book_isbn) > 1);
+
+b. SELECT c.dept
+FROM COURSE c
+JOIN BOOK_ADOPTION ba ON c.course_id = ba.course_id
+JOIN TEXT t ON ba.book_isbn = t.book_isbn
+GROUP BY c.dept, c.course_id
+HAVING COUNT(DISTINCT t.publisher) = 1;
+ (not correct)
+
+c. SELECT s.name, s.regno FROM Student s WHERE s.regno IN (Select e.regno from ENROLL e join COURSE c on c.course_id = e.course_id GROUP BY e.regno HAVING COUNT(DISTINCT c.dept) > 1);
+
+d. SELECT s.regno, s.name from Student s WHERE s.regno NOT IN (Select e.regno from Enroll e);  
+
+e. 
+SELECT dept
+FROM COURSE c
+WHERE EXISTS (
+    SELECT 1
+    FROM BOOK_ADOPTION ba
+    JOIN TEXT t ON ba.book_isbn = t.book_isbn
+    WHERE ba.course_id = c.course_id
+    AND t.publisher = 'McGraw-Hill'
+)
+AND NOT EXISTS (
+    SELECT 1
+    FROM BOOK_ADOPTION ba
+    JOIN TEXT t ON ba.book_isbn = t.book_isbn
+    WHERE ba.course_id = c.course_id
+    AND t.publisher != 'McGraw-Hill'
+)
+GROUP BY c.dept;
+
+f.  SELECT DISTINCT t.book_isbn, t.booktitle, t.publisher, t.author
+  2  FROM BOOK_ADOPTION ba
+  3  JOIN TEXT t ON ba.book_isbn = t.book_isbn
+  4  JOIN ENROLL e ON e.course_id = ba.course_id
+  5  WHERE e.book_isbn = ba.book_isbn
+  6  AND t.book_isbn IS NOT NULL
+  7  AND e.book_isbn IS NOT NULL;
+
+
+g. SELECT c.course_id, c.cname
+FROM COURSE c
+JOIN BOOK_ADOPTION ba ON c.course_id = ba.course_id
+JOIN TEXT t ON ba.book_isbn = t.book_isbn
+WHERE t.publisher = 'MIT Press'
+GROUP BY c.course_id, c.cname
+HAVING COUNT(DISTINCT ba.book_isbn) >= 2;
+
+h. SELECT regno, COUNT(book_isbn) AS num_books
+  2  FROM ENROLL
+  3  GROUP BY regno
+  4  HAVING COUNT(book_isbn) = (
+  5      SELECT MAX(book_count)
+  6      FROM (
+  7          SELECT COUNT(book_isbn) AS book_count
+  8          FROM ENROLL
+  9          GROUP BY regno
+ 10      )
+ 11  );
+
+
+i. SELECT publisher, (
+      SELECT COUNT(*)
+      FROM TEXT t2
+      WHERE t2.publisher = t.publisher ) AS num_books
+  FROM TEXT t
+ GROUP BY publisher;
+
+
+k. SELECT DISTINCT e.regno
+  2  FROM ENROLL e
+  3  WHERE NOT EXISTS (
+  4      SELECT 1
+  5      FROM BOOK_ADOPTION ba
+  6      WHERE ba.course_id = e.course_id
+  7      AND NOT EXISTS (
+  8          SELECT 1
+  9          FROM ENROLL e2
+ 10          WHERE e2.regno = e.regno
+ 11          AND e2.course_id = e.course_id
+ 12          AND e2.book_isbn = ba.book_isbn
+ 13      )
+ 14  );
