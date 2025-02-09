@@ -1,0 +1,19 @@
+d:\230953160\Lab1_Calc\Lab1_Calc\bin\Debug\Lab1_Calc.exe.config
+D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\bin\Debug\Lab1_Calc.exe.config
+D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\bin\Debug\Lab1_Calc.exe
+D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\bin\Debug\Lab1_Calc.pdb
+D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.Form1.resources
+D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.Properties.Resources.resources
+D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.csproj.GenerateResource.Cache
+D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.exe
+D:\230953160\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.pdb
+C:\Users\ahuja\source\repos\Deep-Axe\Sem-4-Labs\DBMS Lab\Lab 1\Lab1_Calc\Lab1_Calc\bin\Debug\Lab1_Calc.exe.config
+C:\Users\ahuja\source\repos\Deep-Axe\Sem-4-Labs\DBMS Lab\Lab 1\Lab1_Calc\Lab1_Calc\bin\Debug\Lab1_Calc.exe
+C:\Users\ahuja\source\repos\Deep-Axe\Sem-4-Labs\DBMS Lab\Lab 1\Lab1_Calc\Lab1_Calc\bin\Debug\Lab1_Calc.pdb
+C:\Users\ahuja\source\repos\Deep-Axe\Sem-4-Labs\DBMS Lab\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.csproj.AssemblyReference.cache
+C:\Users\ahuja\source\repos\Deep-Axe\Sem-4-Labs\DBMS Lab\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.Form1.resources
+C:\Users\ahuja\source\repos\Deep-Axe\Sem-4-Labs\DBMS Lab\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.Properties.Resources.resources
+C:\Users\ahuja\source\repos\Deep-Axe\Sem-4-Labs\DBMS Lab\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.csproj.GenerateResource.cache
+C:\Users\ahuja\source\repos\Deep-Axe\Sem-4-Labs\DBMS Lab\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.csproj.CoreCompileInputs.cache
+C:\Users\ahuja\source\repos\Deep-Axe\Sem-4-Labs\DBMS Lab\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.exe
+C:\Users\ahuja\source\repos\Deep-Axe\Sem-4-Labs\DBMS Lab\Lab 1\Lab1_Calc\Lab1_Calc\obj\Debug\Lab1_Calc.pdb
