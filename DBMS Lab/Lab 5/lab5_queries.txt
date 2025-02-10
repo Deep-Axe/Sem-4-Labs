@@ -76,6 +76,15 @@ JOIN BOOK_ADOPTION ba ON c.course_id = ba.course_id
 JOIN TEXT t ON ba.book_isbn = t.book_isbn
 GROUP BY c.dept, c.course_id
 HAVING COUNT(DISTINCT t.publisher) = 1;
+
+
+SELECT c.dept, MIN(t.publisher) AS publisher
+FROM COURSE c
+JOIN BOOK_ADOPTION ba ON c.courseid = ba.courseid
+JOIN TEXT t ON ba.book_isbn = t.book_isbn
+GROUP BY c.dept
+HAVING COUNT(DISTINCT t.publisher) = 1;
+
  (not correct)
 
 c. SELECT s.name, s.regno FROM Student s WHERE s.regno IN (Select e.regno from ENROLL e join COURSE c on c.course_id = e.course_id GROUP BY e.regno HAVING COUNT(DISTINCT c.dept) > 1);
