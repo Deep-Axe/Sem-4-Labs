@@ -1,12 +1,16 @@
 #!/bin/bash
 
-# delete even numbered lines in a file
-echo "Enter the file:"
-read file
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <filename>"
+    exit 1
+fi
 
-echo "Before Deletion"
-cat $file
-sed -i '0~2d' $file
+file="$1"
+if [ ! -f "$file" ]; then
+    echo "Error: File '$file' not found!"
+    exit 1
+fi
 
-echo -e '\n\n\nPost Deletion'
-cat $file
+sed -i 'n;d' "$file"
+
+echo "Even-numbered lines deleted from $file."
