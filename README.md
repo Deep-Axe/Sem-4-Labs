@@ -5,5 +5,5 @@
 ## 2. OS Lab
   Covers Unix Shell Commands, Shell Scripting, System Calls for Process Control, Process Scheduling, Synchronization Problems, Bankers Algorithm, Page Replacement, Disk Scheduling, Dynamic Storage Allocation
 
-## Computer Networking
+## 3. Computer Networking
 Covers use of Cisco PacketTracer and WireShark.
