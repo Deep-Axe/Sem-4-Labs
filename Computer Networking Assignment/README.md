@@ -543,6 +543,10 @@ Neighbor ID     Pri   State           Dead Time   Address         Interface
 ```
 
 ## Ethernet Frame Configuration
+- ### PDU List
+  ![image](https://github.com/user-attachments/assets/499e81a6-dd0d-41a7-a157-92672a74729a)
+ Open Simulation mode, click simple PDU (closed envelope button on top) to observe packet movement.
+Click on PC0 and Server0 to generate packet, observe Ethernet frames and check for successful delivery.
 
 - ### Enable CDP on all devices (Switch and Router)
   `cdp run`
