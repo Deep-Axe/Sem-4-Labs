@@ -1,117 +1,272 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int abs_diff(int a, int b) { return a > b ? a - b : b - a; }
-
-void sort(int a[], int n) {
-    for(int i = 0; i < n-1; i++)
-        for(int j = 0; j < n-i-1; j++)
-            if(a[j] > a[j+1]) { int t = a[j]; a[j] = a[j+1]; a[j+1] = t; }
+// Function to calculate absolute difference
+int absolute_difference(int a, int b) {
+    return a > b ? a - b : b - a;
 }
 
-void print_path(int path[], int count, int total) {
+// Bubble sort to sort the request array
+void sort_requests(int requests[], int count) {
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = 0; j < count - i - 1; j++) {
+            if (requests[j] > requests[j + 1]) {
+                int temp = requests[j];
+                requests[j] = requests[j + 1];
+                requests[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Function to print the path of head movement and total movement
+void print_head_movement_path(int path[], int steps, int total_movement) {
     printf("Head Movement Path: ");
-    for(int i = 0; i < count; i++) printf("%d ", path[i]);
-    printf("\nTotal Head Movement: %d\n", total);
-}
-
-void FCFS(int r[], int n, int h) {
-    int t = 0, path[200], p = 0;
-    path[p++] = h;
-    for(int i = 0; i < n; i++) {
-        t += abs_diff(h, r[i]);
-        h = r[i]; path[p++] = h;
+    for (int i = 0; i < steps; i++) {
+        printf("%d ", path[i]);
     }
-    print_path(path, p, t);
+    printf("\nTotal Head Movement: %d\n", total_movement);
 }
 
-void SSTF(int r[], int n, int h) {
-    int d[100] = {0}, t = 0, path[200], p = 0;
-    path[p++] = h;
-    for(int i = 0; i < n; i++) {
-        int m = 1e9, idx = -1;
-        for(int j = 0; j < n; j++)
-            if(!d[j] && abs_diff(h, r[j]) < m)
-                m = abs_diff(h, r[j]), idx = j;
-        t += m; h = r[idx]; d[idx] = 1; path[p++] = h;
+// First-Come, First-Served
+void FCFS(int requests[], int num_requests, int head_position) {
+    int total_movement = 0;
+    int path[200], path_index = 0;
+    path[path_index++] = head_position;
+
+    for (int i = 0; i < num_requests; i++) {
+        total_movement += absolute_difference(head_position, requests[i]);
+        head_position = requests[i];
+        path[path_index++] = head_position;
     }
-    print_path(path, p, t);
+
+    print_head_movement_path(path, path_index, total_movement);
 }
 
-void SCAN(int r[], int n, int h, int d, int max) {
-    sort(r, n);
-    int t = 0, i, path[200], p = 0;
-    path[p++] = h;
-    for(i = 0; i < n && r[i] < h; i++);
-    if(d) {
-        for(int j = i; j < n; j++) t += abs_diff(h, r[j]), h = r[j], path[p++] = h;
-        if(h != max-1) { t += abs_diff(h, max-1); h = max-1; path[p++] = h; }
-        for(int j = i-1; j >= 0; j--) t += abs_diff(h, r[j]), h = r[j], path[p++] = h;
-    } else {
-        for(int j = i-1; j >= 0; j--) t += abs_diff(h, r[j]), h = r[j], path[p++] = h;
-        if(h != 0) { t += abs_diff(h, 0); h = 0; path[p++] = h; }
-        for(int j = i; j < n; j++) t += abs_diff(h, r[j]), h = r[j], path[p++] = h;
+// Shortest Seek Time First
+void SSTF(int requests[], int num_requests, int head_position) {
+    int visited[100] = {0};
+    int total_movement = 0;
+    int path[200], path_index = 0;
+    path[path_index++] = head_position;
+
+    for (int i = 0; i < num_requests; i++) {
+        int min_distance = 1e9, closest_index = -1;
+
+        for (int j = 0; j < num_requests; j++) {
+            if (!visited[j]) {
+                int distance = absolute_difference(head_position, requests[j]);
+                if (distance < min_distance) {
+                    min_distance = distance;
+                    closest_index = j;
+                }
+            }
+        }
+
+        visited[closest_index] = 1;
+        total_movement += min_distance;
+        head_position = requests[closest_index];
+        path[path_index++] = head_position;
     }
-    print_path(path, p, t);
+
+    print_head_movement_path(path, path_index, total_movement);
 }
 
-void CSCAN(int r[], int n, int h, int max) {
-    sort(r, n);
-    int t = 0, i, path[200], p = 0;
-    path[p++] = h;
-    for(i = 0; i < n && r[i] < h; i++);
-    for(int j = i; j < n; j++) t += abs_diff(h, r[j]), h = r[j], path[p++] = h;
-    if(h != max-1) { t += abs_diff(h, max-1); h = max-1; path[p++] = h; }
-    t += h; h = 0; path[p++] = h;
-    for(int j = 0; j < i; j++) t += abs_diff(h, r[j]), h = r[j], path[p++] = h;
-    print_path(path, p, t);
-}
+// SCAN (Elevator Algorithm)
+void SCAN(int requests[], int num_requests, int head_position, int direction, int disk_size) {
+    sort_requests(requests, num_requests);
+    int total_movement = 0;
+    int path[200], path_index = 0;
+    path[path_index++] = head_position;
 
-void LOOK(int r[], int n, int h, int d) {
-    sort(r, n);
-    int t = 0, i, path[200], p = 0;
-    path[p++] = h;
-    for(i = 0; i < n && r[i] < h; i++);
-    if(d) {
-        for(int j = i; j < n; j++) t += abs_diff(h, r[j]), h = r[j], path[p++] = h;
-        for(int j = i-1; j >= 0; j--) t += abs_diff(h, r[j]), h = r[j], path[p++] = h;
-    } else {
-        for(int j = i-1; j >= 0; j--) t += abs_diff(h, r[j]), h = r[j], path[p++] = h;
-        for(int j = i; j < n; j++) t += abs_diff(h, r[j]), h = r[j], path[p++] = h;
+    int i = 0;
+    while (i < num_requests && requests[i] < head_position) i++;
+
+    if (direction) { // Moving right
+        for (int j = i; j < num_requests; j++) {
+            total_movement += absolute_difference(head_position, requests[j]);
+            head_position = requests[j];
+            path[path_index++] = head_position;
+        }
+        if (head_position != disk_size - 1) {
+            total_movement += absolute_difference(head_position, disk_size - 1);
+            head_position = disk_size - 1;
+            path[path_index++] = head_position;
+        }
+        for (int j = i - 1; j >= 0; j--) {
+            total_movement += absolute_difference(head_position, requests[j]);
+            head_position = requests[j];
+            path[path_index++] = head_position;
+        }
+    } else { // Moving left
+        for (int j = i - 1; j >= 0; j--) {
+            total_movement += absolute_difference(head_position, requests[j]);
+            head_position = requests[j];
+            path[path_index++] = head_position;
+        }
+        if (head_position != 0) {
+            total_movement += absolute_difference(head_position, 0);
+            head_position = 0;
+            path[path_index++] = head_position;
+        }
+        for (int j = i; j < num_requests; j++) {
+            total_movement += absolute_difference(head_position, requests[j]);
+            head_position = requests[j];
+            path[path_index++] = head_position;
+        }
     }
-    print_path(path, p, t);
+
+    print_head_movement_path(path, path_index, total_movement);
 }
 
-void CLOOK(int r[], int n, int h) {
-    sort(r, n);
-    int t = 0, i, path[200], p = 0;
-    path[p++] = h;
-    for(i = 0; i < n && r[i] < h; i++);
-    for(int j = i; j < n; j++) t += abs_diff(h, r[j]), h = r[j], path[p++] = h;
-    if(i) { t += abs_diff(h, r[0]); h = r[0]; path[p++] = h; }
-    for(int j = 0; j < i; j++) t += abs_diff(h, r[j]), h = r[j], path[p++] = h;
-    print_path(path, p, t);
+// C-SCAN (Circular SCAN)
+void CSCAN(int requests[], int num_requests, int head_position, int disk_size) {
+    sort_requests(requests, num_requests);
+    int total_movement = 0;
+    int path[200], path_index = 0;
+    path[path_index++] = head_position;
+
+    int i = 0;
+    while (i < num_requests && requests[i] < head_position) i++;
+
+    for (int j = i; j < num_requests; j++) {
+        total_movement += absolute_difference(head_position, requests[j]);
+        head_position = requests[j];
+        path[path_index++] = head_position;
+    }
+
+    if (head_position != disk_size - 1) {
+        total_movement += absolute_difference(head_position, disk_size - 1);
+        head_position = disk_size - 1;
+        path[path_index++] = head_position;
+    }
+
+    total_movement += head_position; // jump to 0
+    head_position = 0;
+    path[path_index++] = head_position;
+
+    for (int j = 0; j < i; j++) {
+        total_movement += absolute_difference(head_position, requests[j]);
+        head_position = requests[j];
+        path[path_index++] = head_position;
+    }
+
+    print_head_movement_path(path, path_index, total_movement);
+}
+
+// LOOK (like SCAN but doesn't go to end of disk)
+void LOOK(int requests[], int num_requests, int head_position, int direction) {
+    sort_requests(requests, num_requests);
+    int total_movement = 0;
+    int path[200], path_index = 0;
+    path[path_index++] = head_position;
+
+    int i = 0;
+    while (i < num_requests && requests[i] < head_position) i++;
+
+    if (direction) { // Right
+        for (int j = i; j < num_requests; j++) {
+            total_movement += absolute_difference(head_position, requests[j]);
+            head_position = requests[j];
+            path[path_index++] = head_position;
+        }
+        for (int j = i - 1; j >= 0; j--) {
+            total_movement += absolute_difference(head_position, requests[j]);
+            head_position = requests[j];
+            path[path_index++] = head_position;
+        }
+    } else { // Left
+        for (int j = i - 1; j >= 0; j--) {
+            total_movement += absolute_difference(head_position, requests[j]);
+            head_position = requests[j];
+            path[path_index++] = head_position;
+        }
+        for (int j = i; j < num_requests; j++) {
+            total_movement += absolute_difference(head_position, requests[j]);
+            head_position = requests[j];
+            path[path_index++] = head_position;
+        }
+    }
+
+    print_head_movement_path(path, path_index, total_movement);
+}
+
+// C-LOOK (Circular LOOK)
+void CLOOK(int requests[], int num_requests, int head_position) {
+    sort_requests(requests, num_requests);
+    int total_movement = 0;
+    int path[200], path_index = 0;
+    path[path_index++] = head_position;
+
+    int i = 0;
+    while (i < num_requests && requests[i] < head_position) i++;
+
+    for (int j = i; j < num_requests; j++) {
+        total_movement += absolute_difference(head_position, requests[j]);
+        head_position = requests[j];
+        path[path_index++] = head_position;
+    }
+
+    if (i > 0) {
+        total_movement += absolute_difference(head_position, requests[0]);
+        head_position = requests[0];
+        path[path_index++] = head_position;
+
+        for (int j = 0; j < i; j++) {
+            total_movement += absolute_difference(head_position, requests[j]);
+            head_position = requests[j];
+            path[path_index++] = head_position;
+        }
+    }
+
+    print_head_movement_path(path, path_index, total_movement);
 }
 
 int main() {
-    int r[100], n, h, ch, d, max = 200;
-    printf("Enter number of requests: "); scanf("%d", &n);
-    printf("Enter request queue: "); for(int i = 0; i < n; i++) scanf("%d", &r[i]);
-    printf("Enter initial head position: "); scanf("%d", &h);
+    int requests[100], num_requests, head_position, choice, direction;
+    int disk_size = 200; // assume 0 to 199
+
+    printf("Enter number of requests: ");
+    scanf("%d", &num_requests);
+
+    printf("Enter request queue: ");
+    for (int i = 0; i < num_requests; i++) {
+        scanf("%d", &requests[i]);
+    }
+
+    printf("Enter initial head position: ");
+    scanf("%d", &head_position);
 
     do {
-        printf("\n1.FCFS 2.SSTF 3.SCAN 4.C-SCAN 5.LOOK 6.C-LOOK 7.Exit\nChoice: ");
-        scanf("%d", &ch);
-        switch(ch) {
-            case 1: FCFS(r, n, h); break;
-            case 2: SSTF(r, n, h); break;
-            case 3: printf("Direction (0=Left, 1=Right): "); scanf("%d", &d);
-                    SCAN(r, n, h, d, max); break;
-            case 4: CSCAN(r, n, h, max); break;
-            case 5: printf("Direction (0=Left, 1=Right): "); scanf("%d", &d);
-                    LOOK(r, n, h, d); break;
-            case 6: CLOOK(r, n, h); break;
+        printf("\n1.FCFS  2.SSTF  3.SCAN  4.C-SCAN  5.LOOK  6.C-LOOK  7.Exit\nEnter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                FCFS(requests, num_requests, head_position);
+                break;
+            case 2:
+                SSTF(requests, num_requests, head_position);
+                break;
+            case 3:
+                printf("Direction (0=Left, 1=Right): ");
+                scanf("%d", &direction);
+                SCAN(requests, num_requests, head_position, direction, disk_size);
+                break;
+            case 4:
+                CSCAN(requests, num_requests, head_position, disk_size);
+                break;
+            case 5:
+                printf("Direction (0=Left, 1=Right): ");
+                scanf("%d", &direction);
+                LOOK(requests, num_requests, head_position, direction);
+                break;
+            case 6:
+                CLOOK(requests, num_requests, head_position);
+                break;
         }
-    } while(ch != 7);
+
+    } while (choice != 7);
+
     return 0;
 }
